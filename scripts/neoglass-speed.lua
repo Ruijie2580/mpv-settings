@@ -1,8 +1,12 @@
 -- Neo Glass speed helper
 -- Shows playback speed in the top-left corner when speed changes.
 -- Clicking the speed button opens a uosc menu with preset speeds.
--- The menu updates the highlighted (active) item in real time as the
--- speed changes, including immediately after clicking a preset.
+-- The menu highlight (active item) updates in real time as speed changes.
+--
+-- Approach: items use plain `set speed X` commands that uosc runs directly.
+-- We observe the `speed` property and push `update-menu` to uosc so the
+-- highlighted preset follows the current speed. `on_close` tells us when
+-- the menu is dismissed so we stop pushing updates.
 
 local mp = require('mp')
 local utils = require('mp.utils')
@@ -75,34 +79,20 @@ local function open_menu()
         type = 'neoglass-speed',
         title = 'Playback speed',
         items = build_items(current),
-        -- uosc forwards menu events (activate / close / ...) back to us.
-        callback = {'neoglass-speed', 'neoglass-speed-event'},
+        -- Notifies us when the menu is closed so we stop pushing updates.
+        on_close = {'script-message', 'neoglass-speed-closed'},
     }
 
     menu_open = true
     mp.commandv('script-message-to', 'uosc', 'open-menu', utils.format_json(data))
 end
 
--- Handler for events forwarded by uosc while the speed menu is open.
-mp.register_script_message('neoglass-speed-event', function(json)
-    local event = utils.parse_json(json)
-    if not event then return end
-
-    if event.type == 'activate' and event.value then
-        -- Run the command bound to the clicked item (e.g. "set speed 1.5").
-        mp.command(tostring(event.value))
-        -- The speed observer will push a menu update to refresh the highlight.
-    elseif event.type == 'close' then
-        menu_open = false
-    elseif event.type == 'back' then
-        menu_open = false
-    end
-end)
-
 mp.register_script_message('neoglass-speed-menu', open_menu)
-
--- Keep backward-compatible message name; now also opens the menu.
 mp.register_script_message('neoglass-speed-cycle', open_menu)
+
+mp.register_script_message('neoglass-speed-closed', function()
+    menu_open = false
+end)
 
 mp.register_script_message('neoglass-speed-reset', function()
     mp.set_property_native('speed', 1)
