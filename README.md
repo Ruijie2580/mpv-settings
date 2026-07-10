@@ -13,8 +13,8 @@ Personal Windows mpv configuration focused on high-quality anime playback, uosc 
 - Toggleable shader building blocks for FSRCNNX and Anime4K
 - Neo Glass style uosc layout
 - Rounded CJK subtitle setup for Simplified Chinese, Traditional Chinese, and Japanese
-- Custom speed button with top-left speed OSD
-- Compact volume button that opens a thin draggable horizontal volume slider
+- Custom speed button that opens a preset speed menu with top-left speed OSD
+- Slim left-side volume slider
 
 ## Layout
 
@@ -22,7 +22,9 @@ Current uosc bottom bar:
 
 ```text
 Left:  Previous  Play/Pause  Next  Speed
-Right: Volume  Subtitles  Audio tracks  Video tracks
+Right: Subtitles  Audio tracks  Video tracks
+
+Slim volume slider on the left edge of the player window.
 ```
 
 Right click opens the uosc menu.
@@ -93,7 +95,6 @@ mpv.conf
 input.conf
 script-opts/uosc.conf
 scripts/neoglass-speed.lua
-scripts/neoglass-volume.lua
 scripts/neoglass-shaders.lua
 shaders/
 ```
