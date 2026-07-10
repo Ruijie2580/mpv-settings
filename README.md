@@ -14,7 +14,7 @@ Personal Windows mpv configuration focused on high-quality anime playback, uosc 
 - Neo Glass style uosc layout
 - Rounded CJK subtitle setup for Simplified Chinese, Traditional Chinese, and Japanese
 - Custom speed button that opens a preset speed menu with top-left speed OSD
-- Slim left-side volume slider
+- Slim right-side volume slider with smooth rounded ends (no sharp nudge)
 
 ## Layout
 

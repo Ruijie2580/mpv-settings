@@ -40,8 +40,8 @@ function VolumeSlider:on_coordinates()
 	if type(state.volume_max) ~= 'number' or state.volume_max <= 0 then return end
 	local width = self.bx - self.ax
 	self.nudge_y = self.by - round((self.by - self.ay) * (100 / state.volume_max))
-	self.nudge_size = round(width * 0.18)
-	self.draw_nudge = self.ay < self.nudge_y
+	self.nudge_size = 0 -- Disabled: Neo Glass style uses smooth rounded ends, no nudge.
+	self.draw_nudge = false
 	self.spacing = round(width * 0.2)
 end
 function VolumeSlider:on_global_mouse_move()
