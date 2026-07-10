@@ -21,7 +21,7 @@ Current uosc bottom bar:
 
 ```text
 Left:  Previous  Play/Pause  Next  Speed
-Right: Subtitles  Audio tracks  Video tracks
+Right: Volume  Subtitles  Audio tracks  Video tracks
 ```
 
 Right click opens the uosc menu.
@@ -92,6 +92,7 @@ mpv.conf
 input.conf
 script-opts/uosc.conf
 scripts/neoglass-speed.lua
+scripts/neoglass-volume.lua
 scripts/neoglass-shaders.lua
 shaders/
 ```
