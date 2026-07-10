@@ -1,0 +1,25 @@
+# Logs and runtime artifacts
+*.log
+*.tmp
+*.cache
+
+# mpv-generated caches
+gallery-thumbs-dir/
+watch_later/
+
+# Local temp folders
+_font_temp/
+_official_shader_temp/
+
+# Large local CJK fonts are intentionally excluded.
+# See README.md for installation instructions.
+fonts/NotoSansCJK*.otf
+fonts/NotoSans*.ttf
+fonts/NotoSerif*.ttf
+fonts/ResourceHanRounded*.ttf
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
