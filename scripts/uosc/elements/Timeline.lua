@@ -215,7 +215,7 @@ function Timeline:render()
 	local hide_text_ramp = hide_text_below / 2
 	local text_opacity = clamp(0, size - hide_text_below, hide_text_ramp) / hide_text_ramp
 
-	local tooltip_gap = round(2 * state.scale)
+	local tooltip_gap = round(1 * state.scale)
 	local timestamp_gap = tooltip_gap
 
 	local spacing = math.max(math.floor((self.size - self.font_size) / 2.5), 4)
@@ -471,7 +471,10 @@ function Timeline:render()
 			and thumbnail.height ~= 0
 		then
 			local border = math.ceil(math.max(2, state.radius / 2) * state.scale)
-			local thumb_x_margin, thumb_y_margin = border + tooltip_gap + bax, border + tooltip_gap
+			local thumb_radius = math.min(state.radius, border) -- rounded arcs match the outer border scale
+			-- Smaller gap between the thumbnail and its outer border.
+			local thumb_gap = round(math.max(1, tooltip_gap))
+			local thumb_x_margin, thumb_y_margin = border + thumb_gap + bax, thumb_gap
 			local thumb_width, thumb_height = thumbnail.width, thumbnail.height
 			local thumb_x = round(clamp(
 				thumb_x_margin,
@@ -479,14 +482,25 @@ function Timeline:render()
 				display.width - thumb_width - thumb_x_margin
 			))
 			local thumb_y = round(tooltip_anchor.ay - thumb_y_margin - thumb_height)
-			local ax, ay = (thumb_x - border), (thumb_y - border)
-			local bx, by = (thumb_x + thumb_width + border), (thumb_y + thumb_height + border)
+			local ax, ay = (thumb_x - border + thumb_gap), (thumb_y - thumb_gap)
+			local bx, by = (thumb_x + thumb_width + border - thumb_gap), (thumb_y + thumb_height + thumb_gap)
+			-- Outer border, same rounded radius as the rest of the UI.
 			ass:rect(ax, ay, bx, by, {
 				color = bg,
 				border = 1,
 				opacity = {main = config.opacity.thumbnail, border = 0.08 * config.opacity.thumbnail},
 				border_color = fg,
 				radius = state.radius,
+			})
+			-- Inner outline matching the thumbnail edges with the same rounded radius,
+			-- so the thumbnail corner arcs visually match the outer border's arcs.
+			local iax, iay = thumb_x, thumb_y
+			local ibx, iby = thumb_x + thumb_width, thumb_y + thumb_height
+			ass:rect(iax, iay, ibx, iby, {
+				border = 1,
+				opacity = {main = 0, border = 0.25 * config.opacity.thumbnail},
+				border_color = fg,
+				radius = thumb_radius,
 			})
 			local thumb_seconds = (state.rebase_start_time == false and state.start_time) and
 				(hovered_seconds - state.start_time) or hovered_seconds
