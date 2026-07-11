@@ -70,72 +70,26 @@ function VolumeSlider:render()
 	local volume_y = self.ay + self.border_size +
 		((height - (self.border_size * 2)) * (1 - math.min(state.volume / state.volume_max, 1)))
 
-	-- Draws a rectangle with nudge at requested position
+	-- Neo Glass smooth capsule path.
+	-- uosc's original path can develop pointed ends when `state.radius` is
+	-- larger than a slim volume bar's half-width. Clamp radius to half-width
+	-- and draw a true rounded-rectangle/capsule instead.
 	---@param p number Padding from slider edges.
-	---@param r number Border radius.
-	---@param cy? number A y coordinate where to clip the path from the bottom.
-	function create_nudged_path(p, r, cy)
-		cy = cy or ay + p
-		local ax, bx, by = ax + p, bx - p, by - p
-		local d, rh = r * 2, r / 2
-		local nudge_size = ((QUARTER_PI_SIN * (nudge_size - p)) + p) / QUARTER_PI_SIN
+	---@param cy? number Top y coordinate. Defaults to slider top.
+	function create_capsule_path(p, cy)
+		local x1, y1 = ax + p, cy or ay + p
+		local x2, y2 = bx - p, by - p
+		local w, h = x2 - x1, y2 - y1
 		local path = assdraw.ass_new()
-		path:move_to(bx - r, by)
-		path:line_to(ax + r, by)
-		if cy > by - d then
-			local subtracted_radius = (d - (cy - (by - d))) / 2
-			local xbd = (r - subtracted_radius * 1.35) -- x bezier delta
-			path:bezier_curve(ax + xbd, by, ax + xbd, cy, ax + r, cy)
-			path:line_to(bx - r, cy)
-			path:bezier_curve(bx - xbd, cy, bx - xbd, by, bx - r, by)
-		else
-			path:bezier_curve(ax + rh, by, ax, by - rh, ax, by - r)
-			local nudge_bottom_y = nudge_y + nudge_size
-
-			if cy + rh <= nudge_bottom_y then
-				path:line_to(ax, nudge_bottom_y)
-				if cy <= nudge_y then
-					path:line_to((ax + nudge_size), nudge_y)
-					local nudge_top_y = nudge_y - nudge_size
-					if cy <= nudge_top_y then
-						local r, rh = r, rh
-						if cy > nudge_top_y - r then
-							r = nudge_top_y - cy
-							rh = r / 2
-						end
-						path:line_to(ax, nudge_top_y)
-						path:line_to(ax, cy + r)
-						path:bezier_curve(ax, cy + rh, ax + rh, cy, ax + r, cy)
-						path:line_to(bx - r, cy)
-						path:bezier_curve(bx - rh, cy, bx, cy + rh, bx, cy + r)
-						path:line_to(bx, nudge_top_y)
-					else
-						local triangle_side = cy - nudge_top_y
-						path:line_to((ax + triangle_side), cy)
-						path:line_to((bx - triangle_side), cy)
-					end
-					path:line_to((bx - nudge_size), nudge_y)
-				else
-					local triangle_side = nudge_bottom_y - cy
-					path:line_to((ax + triangle_side), cy)
-					path:line_to((bx - triangle_side), cy)
-				end
-				path:line_to(bx, nudge_bottom_y)
-			else
-				path:line_to(ax, cy + r)
-				path:bezier_curve(ax, cy + rh, ax + rh, cy, ax + r, cy)
-				path:line_to(bx - r, cy)
-				path:bezier_curve(bx - rh, cy, bx, cy + rh, bx, cy + r)
-			end
-			path:line_to(bx, by - r)
-			path:bezier_curve(bx, by - rh, bx - rh, by, bx - r, by)
-		end
+		if w <= 0 or h <= 0 then return path end
+		local r = math.max(0, math.min(state.radius, w / 2, h / 2))
+		path:round_rect_cw(x1, y1, x2, y2, r)
 		return path
 	end
 
 	-- BG & FG paths
-	local bg_path = create_nudged_path(0, state.radius + self.border_size)
-	local fg_path = create_nudged_path(self.border_size, state.radius, volume_y)
+	local bg_path = create_capsule_path(0)
+	local fg_path = create_capsule_path(self.border_size, volume_y)
 
 	-- Background
 	ass:new_event()
