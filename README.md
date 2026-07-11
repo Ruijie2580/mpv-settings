@@ -9,6 +9,7 @@ Personal Windows mpv configuration focused on high-quality anime playback, uosc 
 - Vulkan rendering pipeline
 - NVIDIA NVDEC copy-back hardware decoding
 - Natural default upscaler: FSRCNNX x2 8-channel
+- Additional GLSL shaders: RAVU r3/r4, NVScaler, KrigBilateral, CAS, AdaptiveSharpen, SSimSuperRes, SSimDownscaler
 - Right-click uosc menu with categorized shader management
 - Toggleable shader building blocks for FSRCNNX and Anime4K
 - Neo Glass style uosc layout
@@ -78,15 +79,18 @@ Right click → `Shaders`:
 
 - Current / Reset
 - Presets
-- Natural scaler
-- Protect / Prepare
-- Restore detail
-- Soft restore
-- Upscale
-- Upscale + denoise
-- Deblur / Denoise / Lines
+- Upscalers (FSRCNNX, RAVU, NVScaler, KrigBilateral)
+- Profile / Post (AdaptiveSharpen, CAS, NVSharpen, SSimSuperRes, SSimDownscaler)
+- Anime4K > Protect / Prepare
+- Anime4K > Restore detail
+- Anime4K > Soft restore
+- Anime4K > Upscale
+- Anime4K > Upscale + denoise
+- Anime4K > Lines / Deblur / Denoise
 
 Individual shader entries toggle on/off, allowing custom combinations.
+
+Debanding: mpv has a native `--deband=yes` option; a separate GLSL deband shader is therefore intentionally not bundled here. Enable built-in debanding instead via the mpv option or right-click menu.
 
 ## Important paths
 
