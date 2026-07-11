@@ -470,11 +470,11 @@ function Timeline:render()
 			and thumbnail.width ~= 0
 			and thumbnail.height ~= 0
 		then
-			local border = math.ceil(math.max(2, state.radius / 2) * state.scale)
-			local thumb_radius = math.min(state.radius, border) -- rounded arcs match the outer border scale
-			-- Smaller gap between the thumbnail and its outer border.
-			local thumb_gap = round(math.max(1, tooltip_gap))
-			local thumb_x_margin, thumb_y_margin = border + thumb_gap + bax, thumb_gap
+			local border = 1
+			-- Tight gap between the thumbnail and its outer border.
+			local thumb_gap = 1
+			local thumb_x_margin = border + thumb_gap + bax
+			local thumb_y_margin = thumb_gap
 			local thumb_width, thumb_height = thumbnail.width, thumbnail.height
 			local thumb_x = round(clamp(
 				thumb_x_margin,
@@ -482,25 +482,14 @@ function Timeline:render()
 				display.width - thumb_width - thumb_x_margin
 			))
 			local thumb_y = round(tooltip_anchor.ay - thumb_y_margin - thumb_height)
-			local ax, ay = (thumb_x - border + thumb_gap), (thumb_y - thumb_gap)
-			local bx, by = (thumb_x + thumb_width + border - thumb_gap), (thumb_y + thumb_height + thumb_gap)
-			-- Outer border, same rounded radius as the rest of the UI.
+			local ax, ay = (thumb_x - border - thumb_gap), (thumb_y - thumb_gap)
+			local bx, by = (thumb_x + thumb_width + border + thumb_gap), (thumb_y + thumb_height + thumb_gap)
+			-- Rectangular outer border (no rounded corners).
 			ass:rect(ax, ay, bx, by, {
 				color = bg,
 				border = 1,
 				opacity = {main = config.opacity.thumbnail, border = 0.08 * config.opacity.thumbnail},
 				border_color = fg,
-				radius = state.radius,
-			})
-			-- Inner outline matching the thumbnail edges with the same rounded radius,
-			-- so the thumbnail corner arcs visually match the outer border's arcs.
-			local iax, iay = thumb_x, thumb_y
-			local ibx, iby = thumb_x + thumb_width, thumb_y + thumb_height
-			ass:rect(iax, iay, ibx, iby, {
-				border = 1,
-				opacity = {main = 0, border = 0.25 * config.opacity.thumbnail},
-				border_color = fg,
-				radius = thumb_radius,
 			})
 			local thumb_seconds = (state.rebase_start_time == false and state.start_time) and
 				(hovered_seconds - state.start_time) or hovered_seconds
