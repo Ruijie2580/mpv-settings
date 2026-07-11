@@ -159,8 +159,10 @@ Right-click menu also exposes many actions. The `Shaders` submenu is fully categ
 
 - Current / Reset
 - Presets
-- Upscalers (FSRCNNX, RAVU, NVScaler, KrigBilateral)
-- Profile / Post (AdaptiveSharpen, CAS, NVSharpen, SSimSuperRes, SSimDownscaler)
+- Upscalers (FSRCNNX, RAVU, NVScaler)
+- Chroma / Reconstruction (KrigBilateral, SSimSuperRes)
+- Sharpen / Post (AdaptiveSharpen, CAS, NVSharpen)
+- Downscalers (SSimDownscaler)
 - Anime4K > Protect / Prepare
 - Anime4K > Restore detail
 - Anime4K > Soft restore
