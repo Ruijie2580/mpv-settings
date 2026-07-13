@@ -30,6 +30,57 @@ function ass_mt.opacity(self, opacity, fraction)
 	end
 end
 
+-- Material Design Iconic Font (modernx-style) codepoint mapping.
+-- Maps uosc's Material Icons ligature names to MDIF PUA codepoints (UTF-8 bytes).
+local mdif_glyphs = {
+    ['arrow_back_ios'] = '\239\142\181',
+    ['arrow_downward'] = '\239\139\190',
+    ['arrow_forward_ios'] = '\239\142\180',
+    ['arrow_upward'] = '\239\140\131',
+    ['audio'] = '\239\132\143',
+    ['autorenew'] = '\239\134\184',
+    ['bookmark'] = '\239\132\158',
+    ['bookmarks'] = '\239\132\188',
+    ['check'] = '\239\137\171',
+    ['chevron_right'] = '\239\139\187',
+    ['close'] = '\239\132\182',
+    ['crop_square'] = '\239\136\184',
+    ['delete'] = '\239\133\148',
+    ['file_download'] = '\239\136\163',
+    ['file_open'] = '\239\136\168',
+    ['first_page'] = '\239\139\186',
+    ['graphic_eq'] = '\239\142\158',
+    ['help_center'] = '\239\135\182',
+    ['high_quality'] = '\239\143\157',
+    ['language'] = '\239\133\179',
+    ['last_page'] = '\239\139\187',
+    ['list_alt'] = '\239\137\135',
+    ['menu'] = '\239\134\151',
+    ['minimize'] = '\239\135\171',
+    ['navigate_before'] = '\239\139\186',
+    ['navigate_next'] = '\239\139\187',
+    ['not_started'] = '\239\133\165',
+    ['open_in_new'] = '\239\134\163',
+    ['pause'] = '\239\142\167',
+    ['play_arrow'] = '\239\142\170',
+    ['play_circle_outline'] = '\239\142\168',
+    ['playlist_add'] = '\239\142\172',
+    ['refresh'] = '\239\134\185',
+    ['repeat'] = '\239\142\174',
+    ['schedule'] = '\239\140\183',
+    ['search'] = '\239\135\131',
+    ['speaker'] = '\239\139\149',
+    ['spinner'] = '\239\134\184',
+    ['subtitles'] = '\239\143\147',
+    ['theaters'] = '\239\134\158',
+    ['vertical_align_top'] = '\239\140\140',
+    ['video'] = '\239\139\160',
+    ['volume_down'] = '\239\142\185',
+    ['volume_mute'] = '\239\142\186',
+    ['volume_off'] = '\239\142\187',
+    ['volume_up'] = '\239\142\188',
+}
+
 -- Icon.
 ---@param x number
 ---@param y number
@@ -38,8 +89,10 @@ end
 ---@param opts? {color?: string; border?: number; border_color?: string; opacity?: number; clip?: string; align?: number}
 function ass_mt:icon(x, y, size, name, opts)
 	opts = opts or {}
-	opts.font, opts.size, opts.bold = 'MaterialIconsRound-Regular', size, false
-	self:txt(x, y, opts.align or 5, name, opts)
+	opts.font, opts.size, opts.bold = 'Material-Design-Iconic-Font', size, false
+	-- Look up the MDIF codepoint for this icon name; fall back to raw name.
+	local glyph = mdif_glyphs[name] or name
+	self:txt(x, y, opts.align or 5, glyph, opts)
 end
 
 -- Text.
